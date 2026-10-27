@@ -1,0 +1,21 @@
+---
+- hosts: all
+  gather_facts: no
+  vars:
+    _sleep_duration: "{{ sleep_duration | default(3) }}"
+  tasks:
+    - name: Sleep {{ _sleep_duration }}s
+      ansible.builtin.wait_for:
+        timeout: 1
+      loop: "{{ range(1, _sleep_duration + 1, 1) | list }}"
+      loop_control:
+        loop_var: second
+        label: "sleep seconds {{ second }}/{{ _sleep_duration }}"
+
+    - name: Sleep {{ _sleep_duration }}s without output
+      ansible.builtin.wait_for:
+        timeout: "{{ _sleep_duration }}"
+      tags:
+        - never
+        - mute
+
